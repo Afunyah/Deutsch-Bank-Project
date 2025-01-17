@@ -1,0 +1,5 @@
+/node_modules
+/config/X509-cert-8332540519884830521.pem
+/*.pem
+/config/*.pem
+/config/api-key.json

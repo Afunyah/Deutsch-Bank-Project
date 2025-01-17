@@ -1,0 +1,286 @@
+[   
+    {
+        "method": "POST",
+        "endpoint": "/api/tags",
+        "description": "Given a branch name in the body, returns an array of its tag objects",
+        "body": {
+            "user": {
+                "branchName": "Name of a branch"
+            }
+        },
+        "responseCode": "200 if success, 400 if failure",
+        "response": [
+            {
+                "Tags": "Array of tag objects"
+            }
+        ]
+    },
+    {
+        "method": "POST",
+        "endpoint": "/api/mrs/recommend",
+        "description": "Given a user object in the body, returns the top 10 mentors with highest cosine similarity score",
+        "body": {
+            "user": {
+                "_id": "String id of the mentee",
+                "tags": "Array of 1's and 0's of length EXACTLY 17",
+                "business": "String containing the business area of the user"
+            }
+        },
+        "responseCode": "200 if success, 400 if failure",
+        "response": [
+            {
+                "_ObjectID": "User ID with the higest SC score",
+                "score": "cosine similarity score"
+            }
+        ]
+    },
+    {
+        "method": "GET",
+        "endpoint": "/api/mrs/status/:id?:partnerships&:detailed",
+        "description": "If partnerships == true, returns the status of the mentee as well as the top 10 mentors from the scattershot. Else, just returns the status of the mentee. If partnerships = true AND detailed = true, returns the firstname, lastname, business and AOE of each of the mentors for the mentee. P.S. This is a very computationally intensive endpoint, use with caution!",
+        "example": "localhost:3001/api/mrs/status/61fbe94582cced00e4ba2155?partnerships=true&detailed=false",
+        "body": null,
+        "responseCode": "400 if bad request, 200 on success",
+        "response": "A MentoringPartnerships object: see the database." 
+    },
+    {
+        "method" : "POST",
+        "endpoint" : "/api/mrs/mentor",
+        "description" : "Post to this endpoint of a mentor accepts/rejects a mentee",
+        "body" : {
+            "mentor_id" : "String",
+            "mentee_id" : "String",
+            "type" : "Accept | Reject (anything else will send back a 400 error)"
+        },
+        "responseCode": "200 on success, 400 on bad request",
+        "response" : null
+    },
+    {
+        "method" : "POST",
+        "endpoint" : "/api/mrs/end",
+        "description" : "End a mentoring partnership between a mentor and mentee. Sends type 5 alerts to the mentor and mentee.",
+        "body" : {
+            "mentor_id" : "String",
+            "mentee_id" : "String",
+            "reason" : "String (reason for termination of the partnership)"
+        },
+        "responseCode" : "200 on success, 400 on bad request",
+        "response" : null
+    },
+    {
+        "method" : "POST",
+        "endpoint" : "api/feedback/",
+        "description" : "Add a piece of feedback for a partnership or a workshop",
+        "body" : {
+            "star-rating" : "Integer/Double/Whatever",
+            "given_by" : "String (Id)",
+            "given_to" : "String (id)",
+            "feedback_body" : "String",
+            "partnershipId OR workshopId" : "String"
+        },
+        "response" : null,
+        "responseCode" : "200 on success, 400 on bad request"
+    },
+    {
+        "endpoint": "/api/times/:id?times",
+        "method" : "GET",
+        "description" : "Returns the free times of a user with the given ID. If the times argument is set to a date, returns the 1 hour time slots during which they are free on that day",
+        "example" : "localhost:3001/api/times/61fbe94482cced00e4ba214e?day=2022-02-25",
+        "body" : null,
+        "responseCode" : "200 on success, 400 on badly formatted request",
+        "response" : {
+            "_id" : "ObjectId",
+            "day" : "Specified date as a string (you can convert this to a date pretty easily in JS",
+            "user ID" : [
+                "startTime",
+                "finishTime"
+            ]
+        }
+    },
+    {
+        "endpoint" : "/api/times/schedule",
+        "method" : "POST",
+        "description" : "Schedules a meeting between a mentee and a mentor in the given timeslot. Adds a new meeting object, sends a type 3 alert and removes the slot from the mentor's free times",
+        "body" : {
+            "mentor_id" : "String",
+            "mentee_id" : "String",
+            "date" : "String (e.g. 2022-02-25)",
+            "start_time" : "String (e.g. 14:00)",
+            "meeting_title" : "String"
+        },
+        "responseCode" : "200 on success, 400 on bad request",
+        "response" : null
+    },
+    {
+        "endpoint" : "/api/times",
+        "method" : "PUT",
+        "description" : "Update a mentor's free times by adding 1 hour time slots to each time in the times array. For example, if the mentor specifies that they are free on 1400 and 1700, then the slots 1400-1500 and 1700-1800 are added to the database",
+        "body" : {
+            "mentor_id" : "String",
+            "day" : "Date (e.g. 2022-03-20)",
+            "times" : "[Array of time strings] (e.g. [14:00, 16:00]"
+        },
+        "response" : null
+    },
+    {
+        "method" : "POST",
+        "endpoint" : "/api/mrs/mentee",
+        "description" : "Post to this endpoint of a mentee accepts/rejects a mentor. If the tpye is accept, the status of the mentee is set to 'Set' in the MentoringStatus collection",
+        "body" : {
+            "mentor_id" : "String",
+            "mentee_id" : "String",
+            "type" : "Accept | Reject (anything else will send back a 400 error)"
+        },
+        "responseCode": "200 on success, 400 on bad request",
+        "response" : null
+    },
+    {
+        "method": "POST",
+        "endpoint": "/api/alerts/",
+        "description": "Pass in an alert object in the POST body and gets added to the database, as well as sent through the websocket",
+        "body": {
+            "alert": {
+                "sender": "String",
+                "user_associated": "String",
+                "message": "String",
+                "type": "String",
+                "details": {
+                    "description": "An object representing metadata about the specific alert"
+                }
+            }
+        },
+        "responseCode": "200 if success, 400 if failure",
+        "response": null
+    },
+    {
+        "method": "GET",
+        "endpoint": "/api/alerts/:id",
+        "description": "Returns an array of alerts (from the database) for the user with :id",
+        "body": null,
+        "responseCode": "200 if success, 500 if unable to get the alerts, 400 if failure",
+        "response": [
+            "Array of alert objects (see template in the add_alert endpoint)  + a date field for when the alert was created"
+        ]
+    },
+    {
+        "method": "GET",
+        "endpoint": "/api/user/:id",
+        "description": "Replace :id with the id of a user to get all the data about the user",
+        "body" : null,
+        "responseCode": "200 if success, 400 if failure",
+        "response": "User object"
+    },
+    {
+        "endpoint": "/api/user/:id",
+        "method": "PUT",
+        "description": "Replace :id with the id of a user and provide updated user info in the body to update the database",
+        "body": "Updated values to add to the database",
+        "responseCode": "200 if successfully updated, 400 if failure",
+        "response": null
+    },
+    { 
+        "endpoint": "/api/workshops/updateWatchlist",
+        "description": "Given a watchlist, updates the users watchlist",
+        "body": {
+            "menteeID": "String (not BSON ObjectId type) of user's ID",
+            "watchlist": "Array of full Tag Objects (not tag names)"
+        },
+        "response": [
+            {}
+        ]
+    },
+    {
+        "method" : "POST",
+        "endpoint" : "/api/milestones/",
+        "description" : "Create a new milestone",
+        "body" : {
+            "title" : "String",
+            "user_associated" : "String"
+        },
+        "response" : null
+
+    },
+    {
+        "method" : "GET",
+        "endpoint" : "/api/milestones/:id",
+        "description" : "Get all the milestones for the user with id",
+        "body" : null,
+        "response" : null
+    },
+    {
+        "method" : "PUT",
+        "endpoint" : "/api/milestones/:id",
+        "desciption" : "Update the milestone with the given body",
+        "body" : "Object to update the milestone with :id",
+        "response" : null
+    },
+    {
+        "method" : "DELETE",
+        "endpoint" : "/api/milestones/:id",
+        "description" : "Delete the milestone with milestone id :id",
+        "body" : "null",
+        "response" : null
+    },
+    {
+        "method" : "POST",
+        "endpoint" : "/api/appfeedback",
+        "description" : "Post to this endpoint when a user submits feedback for the app",
+        "body" : {
+            "user_id" : "Stirng",
+            "feedback" : "String"
+        },
+        "response" : null
+    },
+    {
+        "method" : "GET",
+        "endpoint" : "/api/appfeedback",
+        "description" : "Get all the feedback submitted for the app",
+        "body" : null,
+        "response" : [
+            "Feedback objects"
+        ]
+    },
+    {
+        "method" : "POST",
+        "endpoint" : "/api/reports",
+        "description" : "Reports made to HR",
+        "body" : {
+            "user_id" : "String",
+            "report" : "String"
+        },
+        "response" : null
+    },
+    {
+        "method" : "GET",
+        "endpoint" : "/api/reports",
+        "description" : "Get all the reports",
+        "body" : null,
+        "response" : [
+            "response objects"
+        ]
+    },
+    {
+        "method": "POST",
+        "endpoint": "/api/workshops/createWorkshop",
+        "description": "Creates a new workshop",
+        "body": {
+            "Workshop": {
+                "Tag": "String. The Tag Name of the workshop",
+                "Name": "String. The name of the workshop",
+                "Capacity": "Int. Maximum number of mentees",
+                "ExpertIds": "Array of Strings. Hosting mentors. Lead mentor should be first entry",
+                "MenteeIds": "Empty array []",
+                "Details": {
+                    "StartDateTime": "DateTime in any clear format. Year,month,day,hrs,mins should be provided",
+                    "Duration": "Int. In hours",
+                    "Location": "String? (for now)",
+                    "isOnline": "Boolean"
+                },
+                "N_Booked": "Zero 0"
+            }
+        },
+        "response": [
+            {}
+        ]
+    }
+]

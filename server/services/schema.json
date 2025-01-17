@@ -1,0 +1,163 @@
+"Alerts": {
+    "_id": "ObjectId",
+    "sender": "ObjectId",
+    "user_associated": "ObjectId",
+    "message": "String",
+    "type": "Int32",
+    "created": "Date", // Is currently stored as a string. Needs changing !!!
+    "details": {
+        "partnershipId": "ObjectId"
+    }
+}
+
+"AppFeedback": {
+    "_id": "ObjectId",
+    "user_id": "ObjectId",
+    "feedback": "String",
+    "date_created": "Date" // Is currently stored as a string. Needs changing !!!
+}
+
+"Branches": {
+    "_id": "ObjectId",
+    "Name": "String",
+    "Locations": ["String"], // Should this be ObjectIds from the locations database??
+    "Tags": ["Object"] // why do we have this ??
+}
+
+"BusinessAreas": {
+    "_id": "ObjectId",
+    "Name": "String"
+}
+
+"Feedback": {
+    "_id": "ObjectId",
+    "star_rating": "Double",
+    "given_by": "String", // This should be "ObjectId"
+    "given_to": "String", // This should be "ObjectId"
+    "feedback_body": "String", // This should be "Date"
+    "details": {
+        "partnershipId": "String" // This should be "ObjectId"
+    }
+}
+
+"GroupSessions": {
+    "_id": "ObjectId",
+    "Name": "String",
+    "Tag": "String",
+    "Expert": "ObjectId",
+    "Mentee": {
+        "Invited": ["ObjectId"],
+        "Accepted": ["ObjectId"] //check that both are added as an ObjectID
+    },
+    "Details": {
+        "StartDateTime": "Date",
+        "EndDateTime": "Date",
+        "Location": "String",
+        "isOnline": "Boolean",
+        "Branch": "String" //Should this be an ObjectID?
+    }
+}
+
+"Meetings": {
+    "_id": "ObjectId",
+    "mentor_id": "ObjectId",
+    "mentee_id": "ObjectId",
+    "meeting_title": "String",
+    "status": "String",
+    "StartDateTime": "Date",
+    "Location": "String" //still needs to be updated
+}
+
+
+"MentoringPartnerships": {
+    "_id": "ObjectId",
+    "mentee": "ObjectId",
+    "mentor": "ObjectId",
+    "mentor_status": "String",
+    "mentee_status": "String",
+    "sc_score": "Double"
+}
+
+"MentoringStatus": {
+    "_id": "ObjectId",
+    "mentee": "ObjectId",
+    "mentor": "ObjectId",
+    "status": "String",
+    "date_ended": "Date", // I changed it to be stored as a Date --> needs to be updated in the code
+    "reason": "String"
+}
+
+"MilestoneCronJobs": {
+    "_id": "ObjectId",
+    "user_assocaited": "ObjectId",
+    "title": "String",
+    "date_given": "Date", // I changed it to be stored as a Date
+    "progress": "String"
+}
+
+"Reports": {
+    "_id": "ObjectId",
+    "user_id": "ObjectId", // I updated it to be stored as an ObjectID
+    "report": "String",
+    "date_created": "Date"
+}
+
+"Tags": {
+    "_id": "ObjectId",
+    "Name": "String",
+    "Demand": {
+        "cumulative": "Int32",
+        "current": "Int32",
+        "watchlist": "Int32",
+        "N_predicted": "Int32",
+        "wsWatchers": ["ObjectId"],
+        "wsRecommendedTo": ["ObjectId"]
+    },
+    "Experts": ["ObjectId"], // needs to be changed
+    "wsRecommended": "Boolean",
+    "index": "Int32"
+}
+
+
+// maybe this should be implemented slightly differently ??
+"Times": {
+    "_id": "ObjectId",
+    "date": "Date",
+    // not finished
+}
+
+
+"Users": {
+    "_id": "ObjectId",
+    "first_name": "String",
+    "last_name": "String",
+    "email": "String",
+    "password": "String",
+    "business": "String",
+    "aoe": ["Int32"],
+    "interests": ["Int32"],
+    "watchlist": ["String"], //should this be stored as an ObjectId from Tag collection?
+    "branch": "String",
+    "isMentor": "Boolean"
+}
+
+
+"WorkshopCronJobs": {}
+
+"Workshops": {
+    "_id": "ObjectId",
+    "Tag": "ObjectId",
+    "Name": "String",
+    "Expertids": ["ObjectId"],
+    "Details": {
+        "StartDateTime": "Date",
+        "EndDateTime": "Date",
+        "Location": "String",
+        "isOnline": "Boolean",
+        "branch": "String"
+    },
+    "N_Booked": "Int32",
+    "MenteeIds": ["ObjectId"]
+} 
+
+//Databases to be deleted: Locations, TestLogin, 
